@@ -69,7 +69,7 @@ func (*MonitorSMTPResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Computed:            true,
 				Default:             int64default.StaticInt64(587),
 				Validators: []validator.Int64{
-					int64validator.Between(0, 65535),
+					int64validator.Between(1, 65535),
 				},
 			},
 			"smtp_security": schema.StringAttribute{
