@@ -20,6 +20,8 @@ import (
 	"github.com/breml/go-uptime-kuma-client/notification"
 )
 
+const telegramDefaultServerURL = "https://api.telegram.org"
+
 var (
 	_ resource.Resource                = &NotificationTelegramResource{}
 	_ resource.ResourceWithImportState = &NotificationTelegramResource{}
@@ -86,6 +88,11 @@ func (*NotificationTelegramResource) Schema(
 			"server_url": schema.StringAttribute{
 				MarkdownDescription: "Telegram server URL (optional, defaults to official Telegram API)",
 				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString(telegramDefaultServerURL),
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
 			"send_silently": schema.BoolAttribute{
 				MarkdownDescription: "Send message silently",
@@ -232,7 +239,7 @@ func (r *NotificationTelegramResource) Read(
 	if telegram.ServerURL != "" {
 		data.ServerURL = types.StringValue(telegram.ServerURL)
 	} else {
-		data.ServerURL = types.StringNull()
+		data.ServerURL = types.StringValue(telegramDefaultServerURL)
 	}
 
 	data.SendSilently = types.BoolValue(telegram.SendSilently)
